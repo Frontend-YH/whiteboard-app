@@ -9,7 +9,7 @@ export default function StartPage() {
 
       };
   return (
-    <ScrollView style={{alignContent:'center'}}>
+    <View style={{alignContent:'center'}}>
     <View style={Styles.imageContainer}>
       <Image
         source={require('./../../assets/images/cover-img.jpg')}
@@ -23,6 +23,9 @@ export default function StartPage() {
         <Text style={Styles.buttonText}>Start</Text>
       </TouchableOpacity>
     </View>
-  </ScrollView>
+   </View>
   );
 }
+
+
+// <ScrollView style={{alignContent:'center'}}></ScrollView>
