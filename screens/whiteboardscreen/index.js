@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Styling from "./styles";
+
+import * as SQLite from 'expo-sqlite';
+
+
+// Any name works - free choice - picked whiteboard.db
+const db = SQLite.openDatabase('whiteboard.db');
 
 export default function Whiteboard() {
   const [showOverlay, setShowOverlay] = useState(false);
@@ -9,6 +15,47 @@ export default function Whiteboard() {
   const [whiteboardContent, setWhiteboardContent] = useState('');
   const [savedWhiteboardContent, setSavedWhiteboardContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
+
+    useEffect(() => {
+     
+    // INSERT data into whiteboard.db (SQLite)
+    const insertData = async () => {
+      return new Promise((resolve, reject) => {
+        db.transaction(
+          tx => {
+            tx.executeSql(
+              `INSERT INTO wbposts (wid, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+              [1, 0, 'SavedWhiteBoardContent', whiteboardContent],
+              (_, result) => {
+                resolve(result);
+              },
+              (_, error) => {
+                reject(error);
+              }
+            );
+          },
+          error => {
+            console.error('Transaction error:', error);
+          }
+        );
+      });
+    };
+
+    console.log("BU", whiteboardContent);
+    insertData();
+
+    }, [savedWhiteboardContent]); // The empty array means this effect runs only once after the initial render
+  
+
+    useEffect(() => {
+     
+        
+
+    }, [savedWhiteboardContent]); // The empty array means this effect runs only once after the initial render
+  
+    
+
+
 
   const toggleOverlay = () => {
     setShowOverlay(!showOverlay);
@@ -20,7 +67,6 @@ export default function Whiteboard() {
 
   const saveWhiteboardContent = () => {
     setSavedWhiteboardContent(whiteboardContent);
-    setWhiteboardContent('');
     toggleInput();
     setShowPopup(true);
     console.log('Innehåll sparades:', whiteboardContent);
@@ -33,6 +79,7 @@ export default function Whiteboard() {
 
   const renderWhiteboard = () => {
     if (showInput) {
+      Keyboard.dismiss()
       return (
         <View style={Styling.whiteboardContainer}>
           <TextInput

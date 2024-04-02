@@ -105,7 +105,7 @@ const updateData = async (pid, newTitle, newContent) => {
   });
 };
 // parameters: pid, title, content
-//updateData(15, "New test title", "New test content");
+updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
   
    // INSERT data into whiteboard.db (SQLite)
    // closed now
