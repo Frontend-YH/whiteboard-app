@@ -15,6 +15,7 @@ export default function StartPage() {
 
   // Initialize the state to store your data
   const [data, setData] = useState([]);
+  const [tData, setTData] = useState("");
   
   // CREATE TABLE in whiteboard.db (SQLite)
   // closed now
@@ -114,7 +115,7 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
       db.transaction(
         tx => {
           tx.executeSql(
-            `DELETE FROM wbposts WHERE title='Test title'`,
+            `DELETE FROM wbposts WHERE title='SavedWhiteBoardContent'`,
             (_, result) => {
               resolve(result);
             },
@@ -162,24 +163,28 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
 
       };
 
+      const fetchAndLogTableData = async () => {
+        try {
+          const fetchedData = await fetchTableData();
+          //console.log(fetchedData);
+          setData(fetchedData); 
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
 
+      
+    // Fetch data and store in useState data
+    useEffect(() => {
 
-  // Fetch data and store in useState data
-  useEffect(() => {
-    const fetchAndLogTableData = async () => {
-      try {
-        const fetchedData = await fetchTableData();
-        console.log(fetchedData);
-        setData(fetchedData); 
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      fetchAndLogTableData();
+
+    }, []); 
+
+    const loadData = () => {
+      alert("LOL!");
+      fetchAndLogTableData();
     };
-
-    fetchAndLogTableData();
-
-  }, []); 
-
 
 
   return (
@@ -197,6 +202,7 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
         <Text style={Styles.buttonText}>Start</Text>
       </TouchableOpacity>
     </View>
+    <TouchableOpacity onPress={loadData}>
     <View style={Styles.contentContainer}>
     {data.map((item, index) => (
     <View key={index}>
@@ -205,6 +211,7 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
     </View>
   ))}
     </View>
+    </TouchableOpacity>
    </ScrollView>
   );
 }
