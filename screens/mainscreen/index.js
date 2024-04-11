@@ -15,8 +15,7 @@ export default function StartPage() {
 
   // Initialize the state to store your data
   const [data, setData] = useState([]);
-  const [tData, setTData] = useState("");
-  
+
   // CREATE TABLE in whiteboard.db (SQLite)
   // closed now
   const createTable = async () => {
@@ -160,8 +159,10 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
     const navigation = useNavigation();
     const handleButtonPress = () => {
         navigation.navigate('whiteBoard');
-
       };
+
+
+
 
       const fetchAndLogTableData = async () => {
         try {
@@ -173,18 +174,24 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
         }
       };
 
-      
-    // Fetch data and store in useState data
+    
+
     useEffect(() => {
-
-      fetchAndLogTableData();
-
-    }, []); 
+      const unsubscribe = navigation.addListener('focus', () => {
+        // The screen is focused
+        console.log('Screen focused');
+        // Perform actions like state updates or API calls
+        fetchAndLogTableData();
+      });
+    
+      return unsubscribe;
+    }, [navigation]);
 
     const loadData = () => {
-      alert("LOL!");
       fetchAndLogTableData();
     };
+
+
 
 
   return (

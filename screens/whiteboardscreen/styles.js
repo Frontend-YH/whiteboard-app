@@ -53,6 +53,7 @@ const Styling = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   whiteboardInput: {
     width: '80%',
@@ -61,6 +62,7 @@ const Styling = StyleSheet.create({
     borderColor: 'black',
     padding: 10,
     fontSize: 18,
+    borderRadius: 10,
   },
   saveButton: {
     marginTop: 20,

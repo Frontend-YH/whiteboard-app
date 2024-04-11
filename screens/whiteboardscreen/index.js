@@ -56,11 +56,16 @@ export default function Whiteboard() {
 
   const saveWhiteboardContent = () => {
     setSavedWhiteboardContent(whiteboardContent);
-    insertData();
-    toggleInput();
-    setShowPopup(true);
+    if (whiteboardContent!=="") {
+      insertData();
+      toggleInput();
+      setShowPopup(true);
+      console.log('Innehåll sparades:', whiteboardContent);
+    } else {
+      console.log('Blank innehåll. Sparades inte.')
+      alert("Innehållsfältet är tomt!");
+    }
 
-    console.log('Innehåll sparades:', whiteboardContent);
   };
 
   const closePopup = () => {
