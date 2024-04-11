@@ -39,10 +39,10 @@ export default function Whiteboard() {
       });
     };
 
-    useEffect(() => {
-      console.log("BU", whiteboardContent);
-      insertData();
-    }, [savedWhiteboardContent]); // Depend on savedWhiteboardContent
+    // useEffect(() => {
+    //   //console.log("BU", whiteboardContent);
+    //   insertData();
+    // }, [savedWhiteboardContent]); // Depend on savedWhiteboardContent
 
 
 
@@ -56,8 +56,10 @@ export default function Whiteboard() {
 
   const saveWhiteboardContent = () => {
     setSavedWhiteboardContent(whiteboardContent);
+    insertData();
     toggleInput();
     setShowPopup(true);
+
     console.log('Innehåll sparades:', whiteboardContent);
   };
 
@@ -68,7 +70,7 @@ export default function Whiteboard() {
 
   const renderWhiteboard = () => {
     if (showInput) {
-      Keyboard.dismiss()
+     
       return (
         <View style={Styling.whiteboardContainer}>
           <TextInput
@@ -88,7 +90,13 @@ export default function Whiteboard() {
     }
   };
 
+  const hideKeyboard = () => {
+    Keyboard.dismiss()
+  };
+ 
+
   return (
+    <TouchableWithoutFeedback onPress={hideKeyboard}>
     <View style={Styling.container}>
       {savedWhiteboardContent !== '' && (
         <View style={Styling.savedContentContainer}>
@@ -127,5 +135,6 @@ export default function Whiteboard() {
         </TouchableWithoutFeedback>
       </Modal>
     </View>
+    </TouchableWithoutFeedback>
   );
 }
