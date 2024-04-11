@@ -16,8 +16,6 @@ export default function Whiteboard() {
   const [savedWhiteboardContent, setSavedWhiteboardContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
-    useEffect(() => {
-     
     // INSERT data into whiteboard.db (SQLite)
     const insertData = async () => {
       return new Promise((resolve, reject) => {
@@ -41,19 +39,10 @@ export default function Whiteboard() {
       });
     };
 
-    console.log("BU", whiteboardContent);
-    insertData();
-
-    }, [savedWhiteboardContent]); // The empty array means this effect runs only once after the initial render
-  
-
     useEffect(() => {
-     
-        
-
-    }, [savedWhiteboardContent]); // The empty array means this effect runs only once after the initial render
-  
-    
+      console.log("BU", whiteboardContent);
+      insertData();
+    }, [savedWhiteboardContent]); // Depend on savedWhiteboardContent
 
 
 
