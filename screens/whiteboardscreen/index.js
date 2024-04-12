@@ -13,6 +13,8 @@ export default function Whiteboard() {
   const [showOverlay, setShowOverlay] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const [whiteboardContent, setWhiteboardContent] = useState('');
+  const [whiteboardName, setWhiteboardName] = useState('');
+  const [whiteboardDesc, setWhiteboardDesc] = useState('');
   const [savedWhiteboardContent, setSavedWhiteboardContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
 
@@ -43,6 +45,16 @@ export default function Whiteboard() {
     //   //console.log("BU", whiteboardContent);
     //   insertData();
     // }, [savedWhiteboardContent]); // Depend on savedWhiteboardContent
+
+
+    const createWhiteboard = () => {
+      if (whiteboardName!=="") {
+        toggleOverlay(); 
+        toggleInput();
+      } else {
+      alert("Innehållsfältet är tomt!");
+      }
+    };
 
 
 
@@ -83,7 +95,7 @@ export default function Whiteboard() {
             placeholder="Skriv något..."
             value={whiteboardContent}
             onChangeText={text => setWhiteboardContent(text)}
-            style={Styling.whiteboardInput}
+            style={Styling.whiteboardInputContent}
           />
           <TouchableOpacity onPress={saveWhiteboardContent} style={Styling.saveButton}>
             <Text style={Styling.saveButtonText}>Spara</Text>
@@ -100,6 +112,9 @@ export default function Whiteboard() {
   };
  
 
+
+
+
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
     <View style={Styling.container}>
@@ -111,21 +126,34 @@ export default function Whiteboard() {
       )}
 
       {!showInput && (
-        <TouchableOpacity style={Styling.plusButton} onPress={toggleOverlay}>
+        <TouchableOpacity style={Styling.plusButton} onPress={() => {toggleOverlay(); }}>
           <Text style={Styling.plusButtonText}>+</Text>
         </TouchableOpacity>
       )}
 
-      {showOverlay && (
+       {showOverlay && (
         <View style={Styling.overlayContainer}>
           <View style={Styling.overlay}>
-            <Text style={Styling.overlayText}>Skapa en ny whiteboard</Text>
-            <TouchableOpacity onPress={() => {toggleOverlay(); toggleInput();}} style={Styling.createButton}>
-              <Text style={Styling.createButtonText}>Skapa</Text>
+            <Text style={Styling.overlayText}>New Whiteboard</Text>
+            <TextInput
+            placeholder="whiteboard name"
+            value={whiteboardName}
+            onChangeText={value => setWhiteboardName(value)}
+            style={Styling.whiteboardInputName} placeholderTextColor="#999"
+          />
+            <TextInput
+            placeholder="whiteboard description"
+            multiline
+            value={whiteboardDesc}
+            onChangeText={value => setWhiteboardDesc(value)}
+            style={Styling.whiteboardInputDesc} placeholderTextColor="#999"
+          />
+            <TouchableOpacity onPress={createWhiteboard} style={Styling.createButton}>
+              <Text style={Styling.createButtonText}>Create</Text>
             </TouchableOpacity>
           </View>
         </View>
-      )}
+      )} 
 
       {renderWhiteboard()}
 

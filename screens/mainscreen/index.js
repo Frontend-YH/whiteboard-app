@@ -204,7 +204,7 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
     </View>
     <View style={Styles.contentContainer}>
       <Text style={Styles.heading}> Makes life easy </Text>
-      <Text style={Styles.paragraf}>Oavsett om det är i klassrummet, på kontoret eller i hemmet, ger Whiteboard dig verktygen för att fånga, organisera och dela dina tankar på ett ögonblick. Låt oss tillsammans skapa och utforska i en värld av oändliga möjligheter med Whiteboard-appen. </Text>
+      <Text style={Styles.paragraf}>Whether it's in the classroom, the office, or Olof the Hag's living room, Whiteboard gives you the tools to capture, organize, and share your thoughts in an instant. Let's create and explore together in a world of endless possibilities with the Whiteboard app.</Text>
       <TouchableOpacity style={Styles.button} onPress={handleButtonPress}>
         <Text style={Styles.buttonText}>Start</Text>
       </TouchableOpacity>
