@@ -23,19 +23,23 @@ const Styling = StyleSheet.create({
     fontSize: 24,
   },
   overlayContainer: {
-    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 240, 0.1)',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    shadowColor: '#000',  // Shadow color: black for a subtle look
+    shadowOffset: { width: 0, height: 2 },  // Small shadow offset for a gentle lift effect
+
+    borderWidth: 6,
+    borderColor: '#e0e0e0',
   },
   overlayText: {
-    color: 'white',
-    fontSize: 20,
+    color: 'black',
+    fontSize: 24,
     marginBottom: 10,
   },
   createButton: {
@@ -47,20 +51,47 @@ const Styling = StyleSheet.create({
   createButtonText: {
     color: 'white',
     fontSize: 16,
+    width: 120,
+    textAlign: 'center',
   },
   whiteboardContainer: {
     flex: 1,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
-  whiteboardInput: {
+  whiteboardInputContent: {
     width: '80%',
     height: '80%',
     borderWidth: 1,
     borderColor: 'black',
     padding: 10,
     fontSize: 18,
+    borderRadius: 10,
+  },
+  whiteboardInputName: {
+    width: 200,
+    borderWidth: 2,
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    padding: 10,
+    margin: 20,
+    fontSize: 18,
+    borderRadius: 10,
+    textAlign: 'center',
+  },
+  whiteboardInputDesc: {
+    width: 200,
+    borderWidth: 2,
+    borderColor: '#fff',
+    backgroundColor: '#fff',
+    height: 100,
+    padding: 10,
+    margin: 20,
+    fontSize: 16,
+    borderRadius: 10,
+    textAlign: 'center',
   },
   saveButton: {
     marginTop: 20,
