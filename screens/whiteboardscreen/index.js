@@ -32,7 +32,23 @@ export default function Whiteboard() {
 
   const [showPopup, setShowPopup] = useState(false);
 
+  const [contents, setContents] = useState({});
     
+  const fetchContents = async () => {
+    const contentUpdates = {};
+    for (let board of whiteboards) {
+      const content = await getWhiteboardContent(board.wid);
+      contentUpdates[board.wid] = content;
+    }
+    setContents(contentUpdates);
+  };
+
+  useEffect(() => {
+    fetchContents();
+  }, [whiteboards]); // Only refetch when whiteboards array changes
+
+
+
   const createWbBoardsTable = async () => {
     return new Promise((resolve, reject) => {
       db.transaction(
@@ -225,6 +241,19 @@ export default function Whiteboard() {
     }
 
   };
+
+
+  const backToWhiteboards = () => {
+
+    setShowOverlay(false);
+    setShowInput(false);
+    setShowBoards(true);
+
+  };
+
+
+
+
   // SELECT data FROM whiteboard.db (SQLite)
   const fetchBoardPosts = async () => {
     //console.log("JONAS:", wid)
@@ -269,9 +298,16 @@ export default function Whiteboard() {
             onChangeText={text => setOpenWhiteboardContent(text)}
             style={Styling.whiteboardInputContent}
           />
+          <View>
           <TouchableOpacity onPress={saveWhiteboardContent} style={Styling.saveButton}>
             <Text style={Styling.saveButtonText}>Save Changes</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity onPress={backToWhiteboards} style={Styling.backButton}>
+            <Text style={Styling.saveButtonText}>&larr; Whiteboards</Text>
+          </TouchableOpacity>
+          </View>
+
         </View>
       );
     } else {
@@ -342,6 +378,7 @@ export default function Whiteboard() {
       setOpenWhiteboardName(boardData[0].title); 
       setOpenWhiteboardDesc(""); 
       setOpenWhiteboardContent(boardData[0].content); 
+      console.log("HK:", boardData[0].content);
       
       //console.log("CONTENT: ", fetchedData[0].content);
       //toggleOverlay(); 
@@ -356,20 +393,46 @@ export default function Whiteboard() {
  
 
 
+    // OPEN A SPECIFIC WHITEBOARD
+    const getWhiteboardContent  = async (wid) => {
+    
+      const fetchedData = await fetchBoardPosts();
+      console.log("minX:", fetchedData);
+      console.log("minWID:", fetchedData[0].wid);
+      //console.log("Current Data WID:", fetchedData);
+      let boardData = fetchedData.filter(post => parseInt(post.wid) === parseInt(wid));
+
+      return boardData[0].content; 
+
+  };
+
+  useEffect(() => {
+    // Code here will run when the component mounts
+    console.log('Component has mounted');
+    // You can also load data or perform other side effects here
+
+    return () => {
+      // This function will run when the component unmounts
+      console.log('Component will unmount');
+    };
+  }, []); // The empty array means this effect runs only once after the initial render
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
     <View style={Styling.container}>
    
     {showBoards && whiteboards.map((whiteboard, index) => (
-        <View key={index} style={Styling.overlayContainer}>
+      <TouchableWithoutFeedback key={index} onPress={() => openWhiteboard(whiteboard.wid)}>
+        <View>
+        <Text style={Styling.openWhiteboardSmallName}>{whiteboard.name}</Text>
+        <Text style={Styling.overlayDescText}>{whiteboard.desc}</Text>
+        <View style={Styling.overlayContainer}>
           <View style={Styling.overlay}>
-            <Text style={Styling.overlayText}>{whiteboard.name} #{whiteboard.wid}</Text>
-            <TouchableOpacity onPress={() => openWhiteboard(whiteboard.wid)} style={Styling.createButton}>
-              <Text style={Styling.createButtonText}>Open</Text>
-            </TouchableOpacity>
+            <Text style={Styling.overlayBoardText}>{contents[whiteboard.wid]}</Text>
           </View>
         </View>
+        </View>
+        </TouchableWithoutFeedback>
       ))}
 
       {!showInput && (

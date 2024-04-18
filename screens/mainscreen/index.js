@@ -230,12 +230,12 @@ const updateData = async (pid, newTitle, newContent) => {
     </View>
     <View style={Styles.contentContainer}>
       <Text style={Styles.heading}> Makes life easy </Text>
-      <Text style={Styles.paragraf}>Whether it's in the classroom, the office, or Olof the Hag's living room, Whiteboard gives you the tools to capture, organize, and share your thoughts in an instant. Let's create and explore together in a world of endless possibilities with the Whiteboard app.</Text>
+      <Text style={Styles.paragraf}>Whether it's in the classroom, office or living room, Whiteboard gives you the tools to capture, organize, and share your thoughts in an instant. Let's create and explore together in a world of endless possibilities with the Whiteboard app.</Text>
       <TouchableOpacity style={Styles.button} onPress={handleButtonPress}>
         <Text style={Styles.buttonText}>Start</Text>
       </TouchableOpacity>
     </View>
-    <TouchableOpacity onPress={loadData}>
+    {/* <TouchableOpacity onPress={loadData}>
     <View style={Styles.contentContainer}>
     {data.map((item, index) => (
     <View key={index}>
@@ -244,7 +244,7 @@ const updateData = async (pid, newTitle, newContent) => {
     </View>
   ))}
     </View>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
    </ScrollView>
   );
 }
