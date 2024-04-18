@@ -40,6 +40,20 @@ const Styling = StyleSheet.create({
     fontSize: 24,
     marginBottom: 10,
   },
+  overlayDescText: {
+    textAlign: 'center',
+    marginTop: 5,
+    color: 'black',
+    fontSize: 12,
+    marginBottom: 0,
+  },
+  overlayBoardText: {
+    width: 170,
+    color: 'black',
+    fontSize: 7,
+    marginBottom: 10,
+    textAlign: 'left',
+  },
   createButton: {
     backgroundColor: '#2073CC',
     paddingVertical: 10,
@@ -60,6 +74,7 @@ const Styling = StyleSheet.create({
 
   },
   whiteboardInputContent: {
+    backgroundColor: 'rgba(32, 115, 204, 0.1)',
     width: '100%',
     height: '80%',
     borderWidth: 1,
@@ -100,6 +115,15 @@ const Styling = StyleSheet.create({
     width: 200,
     paddingTop: 10,
     margin: 10,
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  openWhiteboardSmallName: {
+    color: '#2073CC',
+    width: 200,
+    paddingTop: 10,
+    marginLeft: 20,
     fontSize: 20,
     textAlign: 'center',
     fontWeight: 'bold',
@@ -115,6 +139,13 @@ const Styling = StyleSheet.create({
   saveButton: {
     marginTop: 20,
     backgroundColor: '#2073CC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  backButton: {
+    marginTop: 20,
+    backgroundColor: '#a0a0a0',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
