@@ -14,7 +14,7 @@ const Styling = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'blue',
+    backgroundColor: '#2073CC',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -27,13 +27,11 @@ const Styling = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(0, 0, 240, 0.1)',
+    backgroundColor: 'rgba(32, 115, 204, 0.1)',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',  // Shadow color: black for a subtle look
-    shadowOffset: { width: 0, height: 2 },  // Small shadow offset for a gentle lift effect
-
+    margin: 10,
     borderWidth: 6,
     borderColor: '#e0e0e0',
   },
@@ -43,7 +41,7 @@ const Styling = StyleSheet.create({
     marginBottom: 10,
   },
   createButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#2073CC',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -62,13 +60,17 @@ const Styling = StyleSheet.create({
 
   },
   whiteboardInputContent: {
-    width: '80%',
+    width: '100%',
     height: '80%',
     borderWidth: 1,
     borderColor: 'black',
-    padding: 10,
+    margin: 0,
+    paddingLeft: 20,
+    paddingTop: 20,
     fontSize: 18,
     borderRadius: 10,
+    borderWidth: 6,
+    borderColor: '#e0e0e0',
   },
   whiteboardInputName: {
     width: 200,
@@ -93,9 +95,26 @@ const Styling = StyleSheet.create({
     borderRadius: 10,
     textAlign: 'center',
   },
+  openWhiteboardName: {
+    color: '#2073CC',
+    width: 200,
+    paddingTop: 10,
+    margin: 10,
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  openWhiteboardDesc: {
+    color: 'black',
+    width: '100%',
+    padding: 10,
+    margin: 20,
+    fontSize: 16,
+    textAlign: 'center',
+  },
   saveButton: {
     marginTop: 20,
-    backgroundColor: 'blue',
+    backgroundColor: '#2073CC',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
