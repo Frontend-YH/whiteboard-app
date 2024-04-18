@@ -105,7 +105,7 @@ const updateData = async (pid, newTitle, newContent) => {
   });
 };
 // parameters: pid, title, content
-updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
+//updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
   
    // INSERT data into whiteboard.db (SQLite)
    // closed now
@@ -114,7 +114,7 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
       db.transaction(
         tx => {
           tx.executeSql(
-            `DELETE FROM wbposts WHERE title='SavedWhiteBoardContent'`,
+            `DELETE FROM wbposts`,
             (_, result) => {
               resolve(result);
             },
@@ -132,15 +132,41 @@ updateData(16, "New test title 2 april nr2", "New test content 2 april nr2");
   //deleteData();
  
 
+   // INSERT data into whiteboard.db (SQLite)
+   // closed now
+   const deleteData2 = async () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          tx.executeSql(
+            `DELETE FROM wbboards`,
+            (_, result) => {
+              resolve(result);
+            },
+            (_, error) => {
+              reject(error);
+            }
+          );
+        },
+        error => {
+          console.error('Transaction error:', error);
+        }
+      );
+    });
+  };
+  //deleteData2();
+
+
   // SELECT data FROM whiteboard.db (SQLite)
   const fetchTableData = async () => {
     return new Promise((resolve, reject) => {
       db.transaction(
         tx => {
           tx.executeSql(
-            'SELECT * FROM wbposts',
+            `SELECT * FROM wbposts`,
             [],
             (_, { rows }) => {
+              //console.log("xTEST: ", rows);
               resolve(rows._array);
             },
             (_, error) => {
