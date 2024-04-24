@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, TouchableWi
 import { FontAwesome } from '@expo/vector-icons';
 import Styling from "./styles";
 
-import * as SQLite from 'expo-sqlite';
+// import * as SQLite from 'expo-sqlite';
 
 
-// Any name works - free choice - picked whiteboard.db
-const db = SQLite.openDatabase('whiteboard.db');
+// // Any name works - free choice - picked whiteboard.db
+// const db = SQLite.openDatabase('whiteboard.db');
 
 export default function Whiteboard() {
   const [showOverlay, setShowOverlay] = useState(false);
@@ -17,27 +17,27 @@ export default function Whiteboard() {
   const [showPopup, setShowPopup] = useState(false);
 
     // INSERT data into whiteboard.db (SQLite)
-    const insertData = async () => {
-      return new Promise((resolve, reject) => {
-        db.transaction(
-          tx => {
-            tx.executeSql(
-              `INSERT INTO wbposts (wid, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-              [1, 0, 'SavedWhiteBoardContent', whiteboardContent],
-              (_, result) => {
-                resolve(result);
-              },
-              (_, error) => {
-                reject(error);
-              }
-            );
-          },
-          error => {
-            console.error('Transaction error:', error);
-          }
-        );
-      });
-    };
+    // const insertData = async () => {
+    //   return new Promise((resolve, reject) => {
+    //     db.transaction(
+    //       tx => {
+    //         tx.executeSql(
+    //           `INSERT INTO wbposts (wid, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+    //           [1, 0, 'SavedWhiteBoardContent', whiteboardContent],
+    //           (_, result) => {
+    //             resolve(result);
+    //           },
+    //           (_, error) => {
+    //             reject(error);
+    //           }
+    //         );
+    //       },
+    //       error => {
+    //         console.error('Transaction error:', error);
+    //       }
+    //     );
+    //   });
+    // };
 
     // useEffect(() => {
     //   //console.log("BU", whiteboardContent);
@@ -56,7 +56,7 @@ export default function Whiteboard() {
 
   const saveWhiteboardContent = () => {
     setSavedWhiteboardContent(whiteboardContent);
-    insertData();
+    // insertData();
     toggleInput();
     setShowPopup(true);
 
