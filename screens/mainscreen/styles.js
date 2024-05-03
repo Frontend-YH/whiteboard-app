@@ -71,15 +71,22 @@ const Styles = StyleSheet.create({
   modalHeading: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   themeList: {
+    marginTop: 10,
+  },
+  themeItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
   themeItem: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 16,
+  },
+  checkIcon: {
+    marginLeft: 10,
   },
   });
 
