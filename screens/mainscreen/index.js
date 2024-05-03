@@ -223,6 +223,8 @@ const updateData = async (pid, newTitle, newContent) => {
       'Sport theme': require('./../../assets/images/sport-background.jpg'),
       'Fashion theme': require('./../../assets/images/fashion-background.jpg'),
       'Future theme': require('./../../assets/images/future-background.jpg'),
+      'Vacation theme': require('./../../assets/images/vacation-background.jpg'),
+      'Office theme': require('./../../assets/images/office-background.jpg'),
     };
     const handleThemeSelectorPress = () => {
       console.log("hej")
