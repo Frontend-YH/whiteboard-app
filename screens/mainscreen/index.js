@@ -216,7 +216,14 @@ const updateData = async (pid, newTitle, newContent) => {
     const loadData = () => {
       fetchAndLogTableData();
     };
-
+    const [selectedTheme, setSelectedTheme] = useState(null);
+    const themes = {
+      'Default theme': require('./../../assets/images/cover-img.jpg'),
+      'Beer theme': require('./../../assets/images/beer-background.jpg'),
+      'Sport theme': require('./../../assets/images/sport-background.jpg'),
+      'Fashion theme': require('./../../assets/images/fashion-background.jpg'),
+      'Future theme': require('./../../assets/images/future-background.jpg'),
+    };
     const handleThemeSelectorPress = () => {
       console.log("hej")
       setShowModal(true);
@@ -230,10 +237,10 @@ const updateData = async (pid, newTitle, newContent) => {
   return (
     <ScrollView style={{alignContent:'center'}}>
     <View style={Styles.imageContainer}>
-      <Image
-        source={require('./../../assets/images/cover-img.jpg')}
-        style={Styles.image}
-      />
+    <Image
+          source={selectedTheme ? themes[selectedTheme] : themes['Default theme']}
+          style={Styles.image}
+        />
     </View>
     <View style={Styles.contentContainer}>
       <Text style={Styles.heading}> Makes life easy </Text>
@@ -269,11 +276,9 @@ const updateData = async (pid, newTitle, newContent) => {
             <View style={Styles.modalContainer}>
               <Text style={Styles.modalHeading}>Välj tema</Text>
               <View style={Styles.themeList}>
-                <Text style={Styles.themeItem}>Default theme</Text>
-                <Text style={Styles.themeItem}>Beer theme</Text>
-                <Text style={Styles.themeItem}>Sport theme</Text>
-                <Text style={Styles.themeItem}>Fashion theme</Text>
-                <Text style={Styles.themeItem}>Future theme</Text>
+                {Object.keys(themes).map(theme => (
+                  <Text key={theme} style={Styles.themeItem} onPress={() => setSelectedTheme(theme)}>{theme}</Text>
+                ))}
               </View>
             </View>
           </View>
