@@ -51,6 +51,36 @@ const Styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
   },
+  themeSelector: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  themeList: {
+    alignItems: 'center',
+  },
+  themeItem: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
   });
 
   export default Styles;
