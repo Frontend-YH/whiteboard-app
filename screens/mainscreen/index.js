@@ -271,13 +271,16 @@ const updateData = async (pid, newTitle, newContent) => {
         transparent={true}
         animationType="fade"
       >
-        <TouchableWithoutFeedback onPress={handleCloseModal}>
+       <TouchableWithoutFeedback onPress={handleCloseModal}>
           <View style={Styles.modalBackground}>
             <View style={Styles.modalContainer}>
               <Text style={Styles.modalHeading}>Välj tema</Text>
               <View style={Styles.themeList}>
                 {Object.keys(themes).map(theme => (
-                  <Text key={theme} style={Styles.themeItem} onPress={() => setSelectedTheme(theme)}>{theme}</Text>
+                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)}>
+                    <Text style={Styles.themeItem}>{theme}</Text>
+                    {selectedTheme === theme && <FontAwesome name="check" size={20} color="green" style={Styles.checkIcon} />}
+                  </TouchableOpacity>
                 ))}
               </View>
             </View>
