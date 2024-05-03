@@ -1,8 +1,8 @@
-import { ScrollView,View, Image, Text, TouchableOpacity } from 'react-native';
+import { ScrollView ,View, Image, Text, TouchableOpacity,Modal, TouchableWithoutFeedback} from 'react-native';
 import { useState, useEffect } from 'react';
 import Styles from "./styles";
 import { useNavigation } from '@react-navigation/native';
-
+import { FontAwesome } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite';
 
 
@@ -12,7 +12,7 @@ const db = SQLite.openDatabase('whiteboard.db');
 // SQLite functions below have all been fully tested and can be used.
 
 export default function StartPage() {
-
+  const [showModal, setShowModal] = useState(false);
   // Initialize the state to store your data
   const [data, setData] = useState([]);
 
@@ -217,7 +217,14 @@ const updateData = async (pid, newTitle, newContent) => {
       fetchAndLogTableData();
     };
 
-
+    const handleThemeSelectorPress = () => {
+      console.log("hej")
+      setShowModal(true);
+    };
+  
+    const handleCloseModal = () => {
+      setShowModal(false);
+    };
 
 
   return (
@@ -245,6 +252,33 @@ const updateData = async (pid, newTitle, newContent) => {
   ))}
     </View>
     </TouchableOpacity> */}
+      <TouchableOpacity  style={Styles.themeSelector} onPress={handleThemeSelectorPress}>
+      <FontAwesome
+  name="cog"
+  size={24}
+  color="black"
+/>
+  </TouchableOpacity>
+  <Modal
+        visible={showModal}
+        transparent={true}
+        animationType="fade"
+      >
+        <TouchableWithoutFeedback onPress={handleCloseModal}>
+          <View style={Styles.modalBackground}>
+            <View style={Styles.modalContainer}>
+              <Text style={Styles.modalHeading}>Välj tema</Text>
+              <View style={Styles.themeList}>
+                <Text style={Styles.themeItem}>Default theme</Text>
+                <Text style={Styles.themeItem}>Beer theme</Text>
+                <Text style={Styles.themeItem}>Sport theme</Text>
+                <Text style={Styles.themeItem}>Fashion theme</Text>
+                <Text style={Styles.themeItem}>Future theme</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
    </ScrollView>
   );
 }
