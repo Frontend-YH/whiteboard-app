@@ -9,6 +9,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
+import { ThemeProvider } from './ThemeContext'; 
+
 
 
 // SQLite for React Native Expo
@@ -39,9 +41,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
+
 export default function App() {
   return (
-
+    <ThemeProvider>
     <GluestackUIProvider config={config}>
      <NavigationContainer>
       <Stack.Navigator>
@@ -51,6 +54,7 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   </GluestackUIProvider>
+  </ThemeProvider>
   );
 }
 
