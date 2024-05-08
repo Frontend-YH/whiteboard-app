@@ -7,6 +7,7 @@ const Styling = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingBottom: 50,
+    opacity: 1.0,
   },
   plusButton: {
     position: 'absolute',
@@ -27,7 +28,7 @@ const Styling = StyleSheet.create({
     alignItems: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(32, 115, 204, 0.1)',
+    backgroundColor: 'rgba(206, 206, 206, 0.8)',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -43,7 +44,7 @@ const Styling = StyleSheet.create({
   overlayDescText: {
     textAlign: 'center',
     marginTop: 5,
-    color: 'black',
+    color: '#ffffff',
     fontSize: 12,
     marginBottom: 0,
   },
@@ -74,7 +75,7 @@ const Styling = StyleSheet.create({
 
   },
   whiteboardInputContent: {
-    backgroundColor: 'rgba(32, 115, 204, 0.1)',
+    backgroundColor: 'rgba(204, 204, 204, 0.9)',
     width: '100%',
     height: '80%',
     borderWidth: 1,
@@ -120,7 +121,7 @@ const Styling = StyleSheet.create({
     fontWeight: 'bold',
   },
   openWhiteboardSmallName: {
-    color: '#2073CC',
+    color: '#ffffff',
     width: 200,
     paddingTop: 10,
     marginLeft: 20,

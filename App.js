@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
+import { ThemeProvider } from './ThemeContext'; 
+
 
 
 // SQLite for React Native Expo
@@ -36,8 +38,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
+
 export default function App() {
   return (
+
      <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="mainScreen" component={StartPage} />
@@ -45,6 +49,7 @@ export default function App() {
         <Stack.Screen name="shareScreen" component={ShareScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 }
 

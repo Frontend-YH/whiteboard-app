@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite';
 
+import { useTheme } from '../../ThemeContext';
 
 // Any name works - free choice - picked whiteboard.db
 const db = SQLite.openDatabase('whiteboard.db');
@@ -217,7 +218,7 @@ const updateData = async (pid, newTitle, newContent) => {
     const loadData = () => {
       fetchAndLogTableData();
     };
-    const [selectedTheme, setSelectedTheme] = useState(null);
+    const { selectedTheme, setSelectedTheme } = useTheme();
     const themes = {
       'Default theme': require('./../../assets/images/cover-img.jpg'),
       'Beer theme': require('./../../assets/images/beer-background.jpg'),
@@ -277,10 +278,10 @@ const updateData = async (pid, newTitle, newContent) => {
        <TouchableWithoutFeedback onPress={handleCloseModal}>
           <View style={Styles.modalBackground}>
             <View style={Styles.modalContainer}>
-              <Text style={Styles.modalHeading}>Välj tema</Text>
+              <Text style={Styles.modalHeading}>Change theme</Text>
               <View style={Styles.themeList}>
                 {Object.keys(themes).map(theme => (
-                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)}>
+                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)} >
                     <Text style={Styles.themeItem}>{theme}</Text>
                     {selectedTheme === theme && <FontAwesome name="check" size={20} color="green" style={Styles.checkIcon} />}
                   </TouchableOpacity>
