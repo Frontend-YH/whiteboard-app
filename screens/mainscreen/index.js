@@ -1,4 +1,5 @@
-import { ScrollView ,View, Image, Text, TouchableOpacity,Modal, TouchableWithoutFeedback} from 'react-native';
+import { View, Image, Text, TouchableOpacity,Modal, TouchableWithoutFeedback} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
 import Styles from "./styles";
 import { useNavigation } from '@react-navigation/native';
