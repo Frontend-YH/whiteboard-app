@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, TextInput, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import Styling from "./styles";
 
 import * as SQLite from 'expo-sqlite';
 
+import { useTheme } from '../../ThemeContext';
+
+const themes = {
+  'Default theme': require('./../../assets/images/cover-img.jpg'),
+  'Beer theme': require('./../../assets/images/beer-background.jpg'),
+  'Sport theme': require('./../../assets/images/sport-background.jpg'),
+  'Fashion theme': require('./../../assets/images/fashion-background.jpg'),
+  'Future theme': require('./../../assets/images/future-background.jpg'),
+  'Vacation theme': require('./../../assets/images/vacation-background.jpg'),
+  'Office theme': require('./../../assets/images/office-background.jpg'),
+};
 
 // Any name works - free choice - picked whiteboard.db
 const db = SQLite.openDatabase('whiteboard.db');
 
 export default function Whiteboard() {
+
+  const { selectedTheme, setSelectedTheme } = useTheme();
+
   const [showOverlay, setShowOverlay] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const [showBoards, setShowBoards] = useState(true);
@@ -146,8 +160,6 @@ export default function Whiteboard() {
       });
     };
 
-
-
     const updateData = async (pid, newTitle, newContent) => {
       return new Promise((resolve, reject) => {
         db.transaction(
@@ -174,7 +186,6 @@ export default function Whiteboard() {
     //   //console.log("BU", whiteboardContent);
     //   insertData();
     // }, [savedWhiteboardContent]); // Depend on savedWhiteboardContent
-
 
 
   const toggleBoards = () => {
@@ -419,18 +430,20 @@ export default function Whiteboard() {
 
   return (
     <TouchableWithoutFeedback onPress={hideKeyboard}>
-    <View style={Styling.container}>
-   
+       <ImageBackground source={themes[selectedTheme]} resizeMode="cover" style={Styling.container}>
+    
     {showBoards && whiteboards.map((whiteboard, index) => (
       <TouchableWithoutFeedback key={index} onPress={() => openWhiteboard(whiteboard.wid)}>
         <View>
         <Text style={Styling.openWhiteboardSmallName}>{whiteboard.name}</Text>
         <Text style={Styling.overlayDescText}>{whiteboard.desc}</Text>
+
         <View style={Styling.overlayContainer}>
           <View style={Styling.overlay}>
             <Text style={Styling.overlayBoardText}>{contents[whiteboard.wid]}</Text>
           </View>
         </View>
+       
         </View>
         </TouchableWithoutFeedback>
       ))}
@@ -477,7 +490,7 @@ export default function Whiteboard() {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-    </View>
+    </ImageBackground>
     </TouchableWithoutFeedback>
   );
 }
