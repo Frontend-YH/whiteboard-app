@@ -435,9 +435,12 @@ export default function Whiteboard() {
     {showBoards && whiteboards.map((whiteboard, index) => (
       <TouchableWithoutFeedback key={index} onPress={() => openWhiteboard(whiteboard.wid)}>
         <View>
-        <Text style={Styling.openWhiteboardSmallName}>{whiteboard.name}</Text>
-        <Text style={Styling.overlayDescText}>{whiteboard.desc}</Text>
-
+      
+        <View style={Styling.overlayTitle}>
+          <Text style={Styling.openWhiteboardSmallName}>{whiteboard.name}</Text>
+          <Text style={Styling.overlayDescText}>{whiteboard.desc}</Text>
+        </View>
+        
         <View style={Styling.overlayContainer}>
           <View style={Styling.overlay}>
             <Text style={Styling.overlayBoardText}>{contents[whiteboard.wid]}</Text>
