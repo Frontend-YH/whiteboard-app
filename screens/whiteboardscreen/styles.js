@@ -215,6 +215,20 @@ const Styling = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  trashCanContainer: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    zIndex: 1, 
+  },
+  trashCan: {
+    width: 30,
+    height: 30,
+    backgroundColor: 'red', 
+    borderRadius: 15, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
   });
 
   export default Styling;

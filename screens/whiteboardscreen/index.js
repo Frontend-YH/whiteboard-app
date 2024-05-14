@@ -21,7 +21,9 @@ const themes = {
 const db = SQLite.openDatabase('whiteboard.db');
 
 export default function Whiteboard() {
-
+  const handleTrashCanPress = () => {
+    console.log("test");
+  };
   const { selectedTheme, setSelectedTheme } = useTheme();
 
   const [showOverlay, setShowOverlay] = useState(false);
@@ -451,6 +453,11 @@ export default function Whiteboard() {
         <View>
       
         <View style={Styling.overlayTitle}>
+        <View style={Styling.trashCanContainer}>
+    <TouchableOpacity onPress={handleTrashCanPress} style={Styling.trashCan}>
+      <FontAwesome name="trash" size={24} color="black" />
+    </TouchableOpacity>
+  </View>
           <Text style={Styling.openWhiteboardSmallName}>{whiteboard.name}</Text>
           <Text style={Styling.overlayDescText}>{whiteboard.desc}</Text>
         </View>
@@ -458,7 +465,9 @@ export default function Whiteboard() {
         <View style={Styling.overlayContainer}>
           <View style={Styling.overlay}>
             <Text style={Styling.overlayBoardText}>{contents[whiteboard.wid]}</Text>
+            
           </View>
+          
         </View>
        
         </View>
