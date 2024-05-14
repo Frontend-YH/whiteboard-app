@@ -221,6 +221,7 @@ export default function Whiteboard() {
                   console.log('Insert successful, new row id:', results.insertId);
                   newRowId = results.insertId;  
                   insertData(newRowId);
+                  backToWhiteboards();
               },
               (tx, error) => {
                   console.error('Error inserting new row:', error);
@@ -234,14 +235,10 @@ export default function Whiteboard() {
               
           });
             
-        
-
      } else {
       // IF IT IS AN ALREADY EXISTING BOARD
        updateData(openWhiteboardPostWid, openWhiteboardName, openWhiteboardContent);
      }
-
-
 
       // toggleInput();
       setShowPopup(true);
@@ -255,6 +252,23 @@ export default function Whiteboard() {
 
 
   const backToWhiteboards = () => {
+
+    // Reloads all the DB content to the whiteboard section ##############################################
+    // Later put this reload-code in separate function we call when we need reload instead.
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT wid, key, qr_code, name, desc, theme, created FROM wbboards',
+        [],
+        (_, { rows }) => {
+          console.log("SELECT: ", rows._array);
+          setWhiteboards(rows._array);
+        },
+        (_, error) => {
+          console.error('Error fetching whiteboards:', error);
+        }
+      );
+    });
+    // ####################################################################################################
 
     setShowOverlay(false);
     setShowInput(false);
