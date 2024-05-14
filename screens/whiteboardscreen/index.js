@@ -21,9 +21,6 @@ const themes = {
 const db = SQLite.openDatabase('whiteboard.db');
 
 export default function Whiteboard() {
-  const handleTrashCanPress = () => {
-    console.log("test");
-  };
   const { selectedTheme, setSelectedTheme } = useTheme();
 
   const [showOverlay, setShowOverlay] = useState(false);
@@ -279,7 +276,7 @@ export default function Whiteboard() {
   };
 
 
-
+ 
 
   // SELECT data FROM whiteboard.db (SQLite)
   const fetchBoardPosts = async () => {
@@ -341,7 +338,48 @@ export default function Whiteboard() {
       return null;
     }
   };
-
+  const handleTrashCanPress = async (wid, event) => {
+    event.persist(); // Bevara den syntetiserade händelsen
+    console.log("Deleted whiteboard with WID:", wid);
+    try {
+      await deleteWhiteboardData(wid);
+      console.log('Whiteboard deleted successfully');
+      backToWhiteboards();
+    } catch (error) {
+      console.error('Error deleting whiteboard:', error);
+    }
+  };
+  
+  const deleteWhiteboardData = async (wid) => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          tx.executeSql(
+            `DELETE FROM wbposts WHERE wid = ?`,
+            [wid],
+            (_, result) => {
+              tx.executeSql(
+                `DELETE FROM wbboards WHERE wid = ?`,
+                [wid],
+                (_, result) => {
+                  resolve(result);
+                },
+                (_, error) => {
+                  reject(error);
+                }
+              );
+            },
+            (_, error) => {
+              reject(error);
+            }
+          );
+        },
+        error => {
+          console.error('Transaction error:', error);
+        }
+      );
+    });
+  };
   const hideKeyboard = () => {
     Keyboard.dismiss()
   };
@@ -454,7 +492,7 @@ export default function Whiteboard() {
       
         <View style={Styling.overlayTitle}>
         <View style={Styling.trashCanContainer}>
-    <TouchableOpacity onPress={handleTrashCanPress} style={Styling.trashCan}>
+        <TouchableOpacity onPress={(event) => handleTrashCanPress(whiteboard.wid, event)} style={Styling.trashCan}>
       <FontAwesome name="trash" size={24} color="black" />
     </TouchableOpacity>
   </View>
