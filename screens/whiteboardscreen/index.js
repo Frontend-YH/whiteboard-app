@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import Styling from "./styles";
@@ -178,6 +179,25 @@ export default function Whiteboard() {
     setShowBoards(!showBoards);
   };
 
+  const confirmDeleteWhiteboard = (wid,event) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this whiteboard?",
+      [ {
+        text: "Delete",
+        onPress: () => handleTrashCanPress(wid,event),
+        style: "destructive",
+      },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+       
+      ],
+      { cancelable: true }
+    );
+  };
+
   const toggleOverlay = () => {
     setShowOverlay(!showOverlay);
     setShowBoards(!showBoards);
@@ -327,7 +347,7 @@ export default function Whiteboard() {
     }
   };
   const handleTrashCanPress = async (wid, event) => {
-    event.persist(); // Bevara den syntetiserade händelsen
+    event.persist();
     console.log("Deleted whiteboard with WID:", wid);
     try {
       await deleteWhiteboardData(wid);
@@ -466,7 +486,7 @@ export default function Whiteboard() {
                   <View style={Styling.trashCanContainer}>
                     <TouchableOpacity
                       onPress={(event) =>
-                        handleTrashCanPress(whiteboard.wid, event)
+                        confirmDeleteWhiteboard(whiteboard.wid, event)
                       }
                       style={Styling.trashCan}
                     >
