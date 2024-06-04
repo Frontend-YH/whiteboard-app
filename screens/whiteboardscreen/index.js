@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+
 import {
   View,
   Text,
@@ -27,6 +29,49 @@ const themes = {
 
 // Any name works - free choice - picked whiteboard.db
 const db = SQLite.openDatabase("whiteboard.db");
+
+
+// ######## Connect to nodeJS server to sync data between devices ##########################
+const postData = async (title, content, pid) => {
+  // Check for internet connectivity
+  // const isConnected = await NetInfo.isConnected.fetch();
+  
+  // if (!isConnected) {
+  //   console.log('No internet connection.');
+  //   return;
+  // }
+
+  try {
+    const response = await fetch('http://tserv.se:3001/whiteboard/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title: title, content: content, pid: pid }),
+    });
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error posting data:', error);
+  }
+};
+
+
+
+// ########################################################################################
+
+// ############## GENERATE 8 LETTERS RANDOMLY ###############################################
+function generateRandomCapitalLetters() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    const randomIndex = Math.floor(Math.random() * letters.length);
+    result += letters[randomIndex];
+  }
+  return result;
+}
+// #########################################################################################
+
 
 export default function Whiteboard() {
   const { selectedTheme, setSelectedTheme } = useTheme();
@@ -68,7 +113,7 @@ export default function Whiteboard() {
           tx.executeSql(
             `CREATE TABLE IF NOT EXISTS wbboards (
               wid INTEGER PRIMARY KEY AUTOINCREMENT,
-              key VARCHAR(255),
+              bkey VARCHAR(255),
               qr_code TEXT,
               name VARCHAR(255),
               desc TEXT,
@@ -101,6 +146,7 @@ export default function Whiteboard() {
             `CREATE TABLE IF NOT EXISTS wbposts (
               pid INTEGER PRIMARY KEY AUTOINCREMENT,
               wid INTEGER,
+              bkey VARCHAR(255),
               respto INTEGER,
               title VARCHAR,
               content TEXT,
@@ -131,13 +177,13 @@ export default function Whiteboard() {
   };
 
   // INSERT data into whiteboard.db (SQLite)
-  const insertData = async (wid) => {
+  const insertData = async (wid, bkey) => {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx) => {
           tx.executeSql(
-            `INSERT INTO wbposts (wid, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-            [wid, 0, openWhiteboardName, openWhiteboardContent],
+            `INSERT INTO wbposts (wid, bkey, respto, title, content, created) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+            [wid, bkey, 0, openWhiteboardName, openWhiteboardContent],
             (_, result) => {
               resolve(result);
             },
@@ -162,6 +208,8 @@ export default function Whiteboard() {
             [newTitle, newContent, pid],
             (_, result) => {
               resolve(result);
+              // Post to nodeJS server
+              postData(newTitle, newContent, pid, "zhmkn42");
             },
             (_, error) => {
               reject(error);
@@ -195,12 +243,13 @@ export default function Whiteboard() {
 
       // IF YOU CREATED A NEW BOARD
       if (openWhiteboardWid === 0) {
+        let boardKey = 
         db.transaction(
           (tx) => {
             tx.executeSql(
-              `INSERT INTO wbboards (key, qr_code, name, desc, theme) VALUES (?, ?, ?, ?, ?)`,
+              `INSERT INTO wbboards (bkey, qr_code, name, desc, theme) VALUES (?, ?, ?, ?, ?)`,
               [
-                "exampleKey",
+                boardKey,
                 "ExampleQRCodeData",
                 openWhiteboardName,
                 openWhiteboardDesc,
@@ -209,7 +258,7 @@ export default function Whiteboard() {
               (tx, results) => {
                 console.log("Insert successful, new row id:", results.insertId);
                 newRowId = results.insertId;
-                insertData(newRowId);
+                insertData(newRowId, boardKey);
                 backToWhiteboards();
               },
               (tx, error) => {
@@ -247,7 +296,7 @@ export default function Whiteboard() {
     // Later put this reload-code in separate function we call when we need reload instead.
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT wid, key, qr_code, name, desc, theme, created FROM wbboards",
+        "SELECT wid, bkey, qr_code, name, desc, theme, created FROM wbboards",
         [],
         (_, { rows }) => {
           console.log("SELECT: ", rows._array);
@@ -378,7 +427,7 @@ export default function Whiteboard() {
 
     db.transaction((tx) => {
       tx.executeSql(
-        "SELECT wid, key, qr_code, name, desc, theme, created FROM wbboards",
+        "SELECT wid, bkey, qr_code, name, desc, theme, created FROM wbboards",
         [],
         (_, { rows }) => {
           console.log("SELECT: ", rows._array);
@@ -410,13 +459,14 @@ export default function Whiteboard() {
 
   // OPEN A SPECIFIC WHITEBOARD
   const openWhiteboard = async (wid) => {
+  
     const fetchedData = await fetchBoardPosts();
     console.log("minX:", fetchedData);
     console.log("minWID:", fetchedData[0].wid);
     let boardData = fetchedData.filter(
       (post) => parseInt(post.wid) === parseInt(wid)
     );
-
+    
     console.log("Empty:", boardData);
 
     setOpenWhiteboardWid(boardData[0].wid);
@@ -431,15 +481,17 @@ export default function Whiteboard() {
 
   // OPEN A SPECIFIC WHITEBOARD
   const getWhiteboardContent = async (wid) => {
+  
     const fetchedData = await fetchBoardPosts();
     console.log("minX:", fetchedData);
     console.log("minWID:", fetchedData[0].wid);
     let boardData = fetchedData.filter(
       (post) => parseInt(post.wid) === parseInt(wid)
+      
     );
-
-    return boardData[0].content;
-  };
+    
+     return boardData[0].content;
+   }; 
 
   useEffect(() => {
     console.log("Component has mounted");

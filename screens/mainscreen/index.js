@@ -1,4 +1,4 @@
-import { View, Image, Text, TouchableOpacity,Modal, TouchableWithoutFeedback} from 'react-native';
+import { View, Image, Text, TouchableOpacity,Modal, TouchableWithoutFeedback, Pressable} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
 import Styles from "./styles";
@@ -18,6 +18,64 @@ export default function StartPage() {
   // Initialize the state to store your data
   const [data, setData] = useState([]);
 
+
+// DELETE THE ENTIRE wbboards TABLE (only used for testing purposes)
+const deleteWbBoardsTable = async () => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `DROP TABLE IF EXISTS wbboards`,
+          [],
+          (_, result) => {
+            console.log("wbboards table deleted: ", result);
+            resolve(result);
+          },
+          (_, error) => {
+            console.log("Error deleting wbboards table: ", error);
+            reject(error);
+          }
+        );
+      },
+      (error) => {
+        console.error("Transaction error:", error);
+        reject(error);
+      }
+    );
+  });
+};
+
+// DELETE THE ENTIRE wbposts TABLE (only used for testing purposes)
+const deleteWbPostsTable = async () => {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(
+          `DROP TABLE IF EXISTS wbposts`,
+          [],
+          (_, result) => {
+            console.log("wbposts table deleted: ", result);
+            resolve(result);
+          },
+          (_, error) => {
+            console.log("Error deleting wbposts table: ", error);
+            reject(error);
+          }
+        );
+      },
+      (error) => {
+        console.error("Transaction error:", error);
+        reject(error);
+      }
+    );
+  });
+};
+
+// deleteWbBoardsTable();
+// deleteWbPostsTable();
+
+
+
   // CREATE TABLE in whiteboard.db (SQLite)
   // closed now
   const createTable = async () => {
@@ -28,6 +86,7 @@ export default function StartPage() {
             `CREATE TABLE IF NOT EXISTS wbposts (
               pid INTEGER PRIMARY KEY AUTOINCREMENT,
               wid INTEGER,
+              bkey VARCHAR(255),
               respto INTEGER,
               title VARCHAR,
               content TEXT,
@@ -55,7 +114,7 @@ export default function StartPage() {
     });
   };
 
-  //createTable();
+  createTable();
 
  // INSERT data into whiteboard.db (SQLite)
  // closed now
@@ -64,8 +123,8 @@ export default function StartPage() {
       db.transaction(
         tx => {
           tx.executeSql(
-            `INSERT INTO wbposts (wid, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-            [1, 0, 'Test title', 'Test content'],
+            `INSERT INTO wbposts (wid, bkey, respto, title, content, created) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+            [1, 'AAAAAAAA', 0, 'Test title', 'Test content'],
             (_, result) => {
               resolve(result);
             },
@@ -170,6 +229,7 @@ const updateData = async (pid, newTitle, newContent) => {
             (_, { rows }) => {
               //console.log("xTEST: ", rows);
               resolve(rows._array);
+              console.log("RArr:", rows._array);
             },
             (_, error) => {
               reject(error);
@@ -182,6 +242,34 @@ const updateData = async (pid, newTitle, newContent) => {
       );
     });
   };
+  //fetchTableData();
+
+  // SELECT data FROM whiteboard.db (SQLite)
+  const fetchTableData2 = async () => {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        tx => {
+          tx.executeSql(
+            `SELECT * FROM wbboards`,
+            [],
+            (_, { rows }) => {
+              //console.log("xTEST: ", rows);
+              resolve(rows._array);
+              console.log("RArr:", rows._array);
+            },
+            (_, error) => {
+              reject(error);
+            }
+          );
+        },
+        error => {
+          console.error('Transaction error:', error);
+        }
+      );
+    });
+  };
+  //fetchTableData2();
+
 
 
     const navigation = useNavigation();
@@ -245,6 +333,15 @@ const updateData = async (pid, newTitle, newContent) => {
           source={selectedTheme ? themes[selectedTheme] : themes['Default theme']}
           style={Styles.image}
         />
+              <Text style={Styles.modalHeading}>Themes</Text>
+              <View style={Styles.themeList}>
+                {Object.keys(themes).map(theme => (
+                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)} >
+                    <Text style={Styles.themeItem}>{theme}</Text>
+                    {selectedTheme === theme && <Text style={Styles.themeItem}>X</Text>}
+                  </TouchableOpacity>
+                ))}
+              </View>
     </View>
     <View style={Styles.contentContainer}>
       <Text style={Styles.heading}> Makes life easy </Text>
@@ -252,6 +349,10 @@ const updateData = async (pid, newTitle, newContent) => {
       <TouchableOpacity style={Styles.button} onPress={handleButtonPress}>
         <Text style={Styles.buttonText}>Start</Text>
       </TouchableOpacity>
+      <View style={Styles.contentFiller}>
+      <Text style={Styles.heading}></Text>
+      </View>
+
     </View>
     {/* <TouchableOpacity onPress={loadData}>
     <View style={Styles.contentContainer}>
@@ -263,37 +364,13 @@ const updateData = async (pid, newTitle, newContent) => {
   ))}
     </View>
     </TouchableOpacity> */}
-      <TouchableOpacity  style={Styles.themeSelector} onPress={handleThemeSelectorPress}>
-      <FontAwesome
-  name="cog"
-  size={24}
-  color="black"
-/>
-  </TouchableOpacity>
-  <Modal
-        visible={showModal}
-        transparent={true}
-        animationType="fade"
-      >
-       <TouchableWithoutFeedback onPress={handleCloseModal}>
-          <View style={Styles.modalBackground}>
-            <View style={Styles.modalContainer}>
-              <Text style={Styles.modalHeading}>Change theme</Text>
-              <View style={Styles.themeList}>
-                {Object.keys(themes).map(theme => (
-                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)} >
-                    <Text style={Styles.themeItem}>{theme}</Text>
-                    {selectedTheme === theme && <FontAwesome name="check" size={20} color="green" style={Styles.checkIcon} />}
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+    
+     
+        
+
+     
+      
    </ScrollView>
   );
 }
 
-
-// <ScrollView style={{alignContent:'center'}}></ScrollView>
