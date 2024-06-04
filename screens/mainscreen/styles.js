@@ -15,7 +15,7 @@ const Styles = StyleSheet.create({
   image: {
     width: 400,
     margin: 15,
-    height: 500,
+    height: 400,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
@@ -29,6 +29,19 @@ const Styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     padding: 20,
+    marginLeft: 14,
+    marginRight: 14,
+    marginTop: 0,
+  },
+  contentFiller: {
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    width: width - 28,
+    marginBottom: 0,
+    alignItems: 'center',
+    padding: 0,
     marginLeft: 14,
     marginRight: 14,
     marginTop: 0,
@@ -83,8 +96,7 @@ const Styles = StyleSheet.create({
     marginTop: 10,
   },
   themeItemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+
     alignItems: 'center',
     marginBottom: 10,
   },
