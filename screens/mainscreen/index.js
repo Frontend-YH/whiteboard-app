@@ -268,6 +268,7 @@ const updateData = async (pid, newTitle, newContent) => {
       );
     });
   };
+  
   //fetchTableData2();
 
 
