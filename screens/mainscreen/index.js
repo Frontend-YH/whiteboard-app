@@ -3,9 +3,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
 import Styles from "./styles";
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; 
 import * as SQLite from 'expo-sqlite';
-
+import BrushIcon from './../../assets/images/brush-icon.webp';
 import { useTheme } from '../../ThemeContext';
 
 // Any name works - free choice - picked whiteboard.db
@@ -319,7 +319,6 @@ const updateData = async (pid, newTitle, newContent) => {
       'Office theme': require('./../../assets/images/office-background.jpg'),
     };
     const handleThemeSelectorPress = () => {
-      console.log("hej")
       setShowModal(true);
     };
   
@@ -327,52 +326,58 @@ const updateData = async (pid, newTitle, newContent) => {
       setShowModal(false);
     };
 
-
+    const handleThemeSelect = (theme) => {
+      setSelectedTheme(theme);
+      setShowModal(false);
+    };
   return (
     <ScrollView style={{alignContent:'center'}}>
-    <View style={Styles.imageContainer}>
-    <Image
+      <View style={Styles.imageContainer}>
+        <Image
           source={selectedTheme ? themes[selectedTheme] : themes['Default theme']}
-          style={Styles.image}
+          style={Styles.themeImage}
         />
-              <Text style={Styles.modalHeading}>Themes</Text>
-              <View style={Styles.themeList}>
-                {Object.keys(themes).map(theme => (
-                  <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => setSelectedTheme(theme)} >
-                    <Text style={Styles.themeItem}>{theme}</Text>
-                    {selectedTheme === theme && <Text style={Styles.themeItem}>X</Text>}
-                  </TouchableOpacity>
-                ))}
-              </View>
-    </View>
-    <View style={Styles.contentContainer}>
-      <Text style={Styles.heading}> Makes life easy </Text>
-      <Text style={Styles.paragraf}>Whether it's in the classroom, office or living room, Whiteboard gives you the tools to capture, organize, and share your thoughts in an instant. Let's create and explore together in a world of endless possibilities with the Whiteboard app.</Text>
-      <TouchableOpacity style={Styles.button} onPress={handleButtonPress}>
-        <Text style={Styles.buttonText}>Start</Text>
-      </TouchableOpacity>
-      <View style={Styles.contentFiller}>
-      <Text style={Styles.heading}></Text>
+        
+      </View>
+      <View style={Styles.contentContainer}>
+        <Text style={Styles.heading}> Makes life easy </Text>
+        <Text style={Styles.paragraf}>Whether it's in the classroom, office or living room, Whiteboard gives you the tools to capture, organize, and share your thoughts in an instant. Let's create and explore together in a world of endless possibilities with the Whiteboard app.</Text>
+        <TouchableOpacity style={Styles.button} onPress={handleButtonPress}>
+          <Text style={Styles.buttonText}>Start</Text>
+        </TouchableOpacity>
+        <View style={Styles.contentFiller}>
+          <Text style={Styles.heading}></Text>
+        </View>
       </View>
 
-    </View>
-    {/* <TouchableOpacity onPress={loadData}>
-    <View style={Styles.contentContainer}>
-    {data.map((item, index) => (
-    <View key={index}>
-      <Text style={Styles.heading}>{item.title}</Text>
-      <Text style={Styles.paragraf}>{item.content}</Text>
-    </View>
-  ))}
-    </View>
-    </TouchableOpacity> */}
-    
-     
-        
-
-     
-      
-   </ScrollView>
+      <Modal
+        visible={showModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseModal}
+      >
+        <TouchableWithoutFeedback onPress={handleCloseModal}>
+          <View style={Styles.modalBackground}>
+            <TouchableWithoutFeedback>
+              <View style={Styles.modalContainer}>
+                <Text style={Styles.modalHeading}>Themes</Text>
+                <View style={Styles.themeList}>
+                  {Object.keys(themes).map(theme => (
+                    <TouchableOpacity key={theme} style={Styles.themeItemContainer} onPress={() => handleThemeSelect(theme)}>
+                      <Text style={Styles.themeItem}>{theme}</Text>
+                      {selectedTheme === theme && <Text style={Styles.checkMark}>✓</Text>}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      <TouchableOpacity style={Styles.themeSelector} onPress={handleThemeSelectorPress}>
+          <Image source={BrushIcon} style={Styles.iconImage} />
+        </TouchableOpacity>
+    </ScrollView>
   );
 }
 
