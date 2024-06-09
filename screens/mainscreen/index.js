@@ -71,8 +71,8 @@ const deleteWbPostsTable = async () => {
   });
 };
 
-// deleteWbBoardsTable();
-// deleteWbPostsTable();
+//deleteWbBoardsTable();
+//deleteWbPostsTable();
 
 
 
@@ -90,6 +90,7 @@ const deleteWbPostsTable = async () => {
               respto INTEGER,
               title VARCHAR,
               content TEXT,
+              currenttime VARCHAR(19),
               image BLOB,
               imgurl VARCHAR(255),
               data TEXT,
