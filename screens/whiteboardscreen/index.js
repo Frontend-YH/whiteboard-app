@@ -4,16 +4,17 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
+  Image,
   ImageBackground,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+ 
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+//import { FontAwesome } from "@expo/vector-icons";
 import Styling from "./styles";
 import * as SQLite from "expo-sqlite";
 import { useTheme } from "../../ThemeContext";
@@ -33,7 +34,7 @@ const db = SQLite.openDatabase("whiteboard.db");
 
 
 // ######## Connect to nodeJS server to sync data between devices ##########################
-const postData = async (title, content, pid) => {
+const postData = async (title, content, wid, bkey, currentTime) => {
   // Check for internet connectivity
   // const isConnected = await NetInfo.isConnected.fetch();
   
@@ -48,31 +49,85 @@ const postData = async (title, content, pid) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ title: title, content: content, pid: pid }),
+      body: JSON.stringify({ title: title, content: content, wid: wid, bkey: bkey, currentTime: currentTime  }),
     });
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
+    return data;
+  } catch (error) {
+    console.error('ErrorX posting data:', error);
+  }
+
+
+  // let data = {"content": "datax"}
+  // return data;
+
+};
+
+// ######## Connect to nodeJS server to sync data between devices ##########################
+const syncData = async (bkey) => {
+  // Check for internet connectivity
+  // const isConnected = await NetInfo.isConnected.fetch();
+  
+  // if (!isConnected) {
+  //   console.log('No internet connection.');
+  //   return;
+  // }
+
+  try {
+    const response = await fetch('http://tserv.se:3001/whiteboard/api/sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ bkey: bkey  }),
+    });
+    const data = await response.json();
+    //console.log(data);
+    return data;
   } catch (error) {
     console.error('Error posting data:', error);
   }
 };
 
 
-
 // ########################################################################################
 
 // ############## GENERATE 8 LETTERS RANDOMLY ###############################################
-function generateRandomCapitalLetters() {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 0; i < 8; i++) {
-    const randomIndex = Math.floor(Math.random() * letters.length);
-    result += letters[randomIndex];
+  function generateRandomCapitalLetters() {
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+      const randomIndex = Math.floor(Math.random() * letters.length);
+      result += letters[randomIndex];
+    }
+    return result;
   }
-  return result;
-}
 // #########################################################################################
 
+// ############# GENERATE CURRENT TIME AND DATE ############################################
+  const getCurrentTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+// #########################################################################################
+
+// ############# CHECK WHICH DATE IS THE MOST RECENT #######################################
+  const isLaterThan = (dateTime1, dateTime2) => {
+    const dt1 = new Date(dateTime1);
+    const dt2 = new Date(dateTime2);
+
+    return dt1 > dt2;
+  };
+
+// #########################################################################################
 
 export default function Whiteboard() {
   const { selectedTheme, setSelectedTheme } = useTheme();
@@ -85,19 +140,24 @@ export default function Whiteboard() {
   const [whiteboardContent, setWhiteboardContent] = useState("");
   const [whiteboardName, setWhiteboardName] = useState("");
   const [whiteboardDesc, setWhiteboardDesc] = useState("");
+  const [whiteboardBkey, setWhiteboardBkey] = useState("");
   const [openWhiteboardPostWid, setOpenWhiteboardPostWid] = useState(0);
+  const [openWhiteboardPostBkey, setOpenWhiteboardPostBkey] = useState("");
   const [openWhiteboardWid, setOpenWhiteboardWid] = useState(0);
   const [openWhiteboardContent, setOpenWhiteboardContent] = useState("");
   const [openWhiteboardName, setOpenWhiteboardName] = useState("");
   const [openWhiteboardDesc, setOpenWhiteboardDesc] = useState("");
+  const [openWhiteboardBkey, setOpenWhiteboardBkey] = useState("");
+  const [openWhiteboardEditTime, setopenWhiteboardEditTime] = useState("");
+  
   const [savedWhiteboardContent, setSavedWhiteboardContent] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const [contents, setContents] = useState({});
+  const [contents, setContents] = useState("");
 
   const fetchContents = async () => {
     const contentUpdates = {};
     for (let board of whiteboards) {
-      const content = await getWhiteboardContent(board.wid);
+      const content = await getWhiteboardContent(board.wid, board.bkey);
       contentUpdates[board.wid] = content;
     }
     setContents(contentUpdates);
@@ -151,6 +211,7 @@ export default function Whiteboard() {
               respto INTEGER,
               title VARCHAR,
               content TEXT,
+              currenttime VARCHAR(19),
               image BLOB,
               imgurl VARCHAR(255),
               data TEXT,
@@ -180,13 +241,17 @@ export default function Whiteboard() {
   // INSERT data into whiteboard.db (SQLite)
   const insertData = async (wid, bkey) => {
     return new Promise((resolve, reject) => {
+      const currentTime = getCurrentTime();
+      console.log("CTIME: ", currentTime);
       db.transaction(
         (tx) => {
           tx.executeSql(
-            `INSERT INTO wbposts (wid, bkey, respto, title, content, created) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
-            [wid, bkey, 0, openWhiteboardName, openWhiteboardContent],
+            `INSERT INTO wbposts (wid, bkey, respto, title, content, currenttime) VALUES (?, ?, ?, ?, ?, ?)`,
+            [wid, bkey, 0, openWhiteboardName, openWhiteboardContent, currentTime],
             (_, result) => {
               resolve(result);
+              // Post to nodeJS server
+              postData(openWhiteboardName, openWhiteboardContent, wid, bkey, currentTime);
             },
             (_, error) => {
               reject(error);
@@ -200,28 +265,41 @@ export default function Whiteboard() {
     });
   };
 
-  const updateData = async (pid, newTitle, newContent) => {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        (tx) => {
-          tx.executeSql(
-            `UPDATE wbposts SET title = ?, content = ? WHERE pid = ?`,
-            [newTitle, newContent, pid],
-            (_, result) => {
-              resolve(result);
-              // Post to nodeJS server
-              postData(newTitle, newContent, pid, "zhmkn42");
-            },
-            (_, error) => {
-              reject(error);
-            }
-          );
-        },
-        (error) => {
-          console.error("Transaction error:", error);
-        }
-      );
-    });
+  const updateData = async (wid, bkey, newTitle, newContent, currentTime) => {
+
+     // Post to nodeJS server
+    const returned = await postData(newTitle, newContent, wid, bkey, currentTime);
+    if (returned) {
+      newContent = returned.content;
+    } 
+    console.log("Returned content: ", returned.content);
+    console.log("Returned newContent: ", newContent);
+
+      return new Promise((resolve, reject) => {
+        
+        db.transaction(
+          (tx) => {
+            tx.executeSql(
+              `UPDATE wbposts SET title = ?, content = ?, currenttime = ? WHERE pid = ?`,
+              [newTitle, newContent, currentTime, wid],
+              (_, result) => {
+                resolve(result);
+            
+              },
+              (_, error) => {
+                reject(error);
+              }
+            );
+          },
+          (error) => {
+            console.error("Transaction error:", error);
+          }
+        );
+
+
+        
+      });
+
   };
   const toggleBoards = () => {
     setShowBoards(!showBoards);
@@ -262,8 +340,16 @@ export default function Whiteboard() {
       let newRowId = 0;
 
       // IF YOU CREATED A NEW BOARD
+      let boardKey;
       if (openWhiteboardWid === 0) {
-        let boardKey = 
+        // If the user wants to create a new Board Key
+        if (openWhiteboardBkey==="") {
+          boardKey = generateRandomCapitalLetters();
+        } else {
+          // If the user has provided an already exisiting Board Key
+          // to share Boards across devices
+          boardKey = openWhiteboardBkey;
+        }
         db.transaction(
           (tx) => {
             tx.executeSql(
@@ -278,6 +364,7 @@ export default function Whiteboard() {
               (tx, results) => {
                 console.log("Insert successful, new row id:", results.insertId);
                 newRowId = results.insertId;
+                console.log("New Board Bkey: ", boardKey);
                 insertData(newRowId, boardKey);
                 backToWhiteboards();
               },
@@ -296,10 +383,13 @@ export default function Whiteboard() {
         );
       } else {
         // IF IT IS AN ALREADY EXISTING BOARD
+        console.log("oHnO: ", openWhiteboardPostBkey);
         updateData(
           openWhiteboardPostWid,
+          openWhiteboardPostBkey,
           openWhiteboardName,
-          openWhiteboardContent
+          openWhiteboardContent,
+          openWhiteboardEditTime
         );
         backToWhiteboards();
       }
@@ -340,7 +430,7 @@ export default function Whiteboard() {
       db.transaction(
         (tx) => {
           tx.executeSql(
-            `SELECT pid, wid, title, content FROM wbposts`,
+            `SELECT pid, bkey, wid, title, content, currenttime FROM wbposts`,
             [],
             (_, { rows }) => {
               resolve(rows._array);
@@ -464,11 +554,14 @@ export default function Whiteboard() {
     if (whiteboardName !== "") {
       setWhiteboardName("");
       setWhiteboardDesc("");
+      setWhiteboardBkey("");
       setOpenWhiteboardWid(0);
       setOpenWhiteboardPostWid(0);
+      setOpenWhiteboardPostBkey("AAAAAAAA");
       setOpenWhiteboardName(whiteboardName);
       setOpenWhiteboardContent("");
       setOpenWhiteboardDesc(whiteboardDesc);
+      setOpenWhiteboardBkey(whiteboardBkey);
       toggleOverlay();
       toggleInput();
       setShowBoards(false);
@@ -486,32 +579,53 @@ export default function Whiteboard() {
     let boardData = fetchedData.filter(
       (post) => parseInt(post.wid) === parseInt(wid)
     );
+
+    const serverData = await syncData(boardData[0].bkey);
+    console.log("ServerDataOpenWhiteBoard: ", serverData);
+    if(serverData) {
+      boardData[0].title = serverData[0].title;
+      boardData[0].content = serverData[0].content;
+      boardData[0].bkey = serverData[0].bkey;
+      boardData[0].wid = serverData[0].wid;
+    }   
     
-    console.log("Empty:", boardData);
+    // console.log("Empty:", boardData);
+    // console.log("BKeytest1: ", boardData[0].bkey);
 
     setOpenWhiteboardWid(boardData[0].wid);
     setOpenWhiteboardPostWid(boardData[0].pid);
+    setOpenWhiteboardPostBkey(boardData[0].bkey);
     setOpenWhiteboardName(boardData[0].title);
     setOpenWhiteboardDesc("");
     setOpenWhiteboardContent(boardData[0].content);
-    console.log("HK:", boardData[0].content);
+    //console.log("CTIME Open: ", getCurrentTime());
+    setopenWhiteboardEditTime(getCurrentTime());
+   //console.log("HK:", boardData[0].content);
     setShowInput(true);
     setShowBoards(false);
+
   };
 
   // OPEN A SPECIFIC WHITEBOARD
-  const getWhiteboardContent = async (wid) => {
+  const getWhiteboardContent = async (wid, bkey) => {
   
     const fetchedData = await fetchBoardPosts();
-    console.log("minX:", fetchedData);
-    console.log("minWID:", fetchedData[0].wid);
+    // console.log("minX:", fetchedData);
+    // console.log("minWID:", fetchedData[0].wid);
     let boardData = fetchedData.filter(
       (post) => parseInt(post.wid) === parseInt(wid)
-      
     );
+
+    let serverData = await syncData(bkey);
+    //console.log("ServerDataX: ", serverData);
+    if(serverData) {
+      boardData[0].content = serverData[0].content;
+    }
     
      return boardData[0].content;
    }; 
+
+
 
   useEffect(() => {
     console.log("Component has mounted");
@@ -542,7 +656,7 @@ export default function Whiteboard() {
                       }
                       style={Styling.trashCan}
                     >
-                      <FontAwesome name="trash" size={24} color="black" />
+                      <Text>X</Text>
                     </TouchableOpacity>
                   </View>
                   <Text style={Styling.openWhiteboardSmallName}>
@@ -552,9 +666,16 @@ export default function Whiteboard() {
                 </View>
                 <View style={Styling.overlayContainer}>
                   <View style={Styling.overlay}>
+                  {contents[whiteboard.wid] ? (
                     <Text style={Styling.overlayBoardText}>
                       {contents[whiteboard.wid]}
                     </Text>
+                  ) : (
+                    <Image
+                      source={require("./../../assets/images/loading.gif")}
+                      style={Styling.overlayBoardImage} 
+                    />
+                  )}
                   </View>
                 </View>
               </View>
@@ -591,6 +712,13 @@ export default function Whiteboard() {
                 style={Styling.whiteboardInputDesc}
                 placeholderTextColor="#999"
               />
+              <TextInput
+                placeholder="Board Key (leave empty to create new)"
+                value={whiteboardBkey}
+                onChangeText={(value) => setWhiteboardBkey(value)}
+                style={Styling.whiteboardInputBkey}
+                placeholderTextColor="#999"
+              />
               <TouchableOpacity
                 onPress={createWhiteboard}
                 style={Styling.createButton}
@@ -607,7 +735,7 @@ export default function Whiteboard() {
           <TouchableWithoutFeedback onPress={closePopup}>
             <View style={Styling.modalContainer}>
               <View style={Styling.popup}>
-                <FontAwesome name="check" size={40} color="green" />
+                <Text>X</Text>
                 <Text style={Styling.popupText}>Whiteboard saved</Text>
               </View>
             </View>

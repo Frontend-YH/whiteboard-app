@@ -78,6 +78,9 @@ const Styling = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'left',
   },
+  overlayBoardImage: {
+    width: 150,
+  },
   createButton: {
     backgroundColor: '#2073CC',
     paddingVertical: 10,
@@ -128,6 +131,17 @@ const Styling = StyleSheet.create({
     borderColor: '#fff',
     backgroundColor: '#fff',
     height: 100,
+    padding: 10,
+    margin: 20,
+    fontSize: 16,
+    borderRadius: 10,
+    textAlign: 'center',
+  },
+  whiteboardInputBkey: {
+    width: 200,
+    borderWidth: 2,
+    borderColor: '#fff',
+    backgroundColor: '#fff',
     padding: 10,
     margin: 20,
     fontSize: 16,
