@@ -1,6 +1,8 @@
-import { StyleSheet, Dimensions} from 'react-native';
-var width = Dimensions.get('window').width; 
-var height = Dimensions.get('window').height; 
+import { StyleSheet, Dimensions } from 'react-native';
+
+var width = Dimensions.get('window').width;
+var height = Dimensions.get('window').height;
+
 const Styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -9,13 +11,14 @@ const Styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
+    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
+  themeImage: {
     width: 400,
     margin: 15,
-    height: 500,
+    height: 400,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
@@ -29,6 +32,19 @@ const Styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     padding: 20,
+    marginLeft: 14,
+    marginRight: 14,
+    marginTop: 0,
+  },
+  contentFiller: {
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    width: width - 28,
+    marginBottom: 0,
+    alignItems: 'center',
+    padding: 0,
     marginLeft: 14,
     marginRight: 14,
     marginTop: 0,
@@ -59,8 +75,8 @@ const Styles = StyleSheet.create({
   },
   themeSelector: {
     position: 'absolute',
-    bottom: 40,
-    right: 30,
+    bottom: 20,
+    right: 20,
   },
   modalBackground: {
     flex: 1,
@@ -83,17 +99,26 @@ const Styles = StyleSheet.create({
     marginTop: 10,
   },
   themeItemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
   themeItem: {
+    
     fontSize: 16,
+    
   },
-  checkIcon: {
-    marginLeft: 10,
+  checkMark: {
+position:'absolute',
+right:10,
+fontSize:22,
   },
-  });
+  iconImage: {
+    width: 30, // Anpassa storleken efter dina önskemål
+    height: 30, // Anpassa storleken efter dina önskemål
+    position: 'absolute',
+    bottom: 10, // Justera positionen efter behov
+    right: 10, // Justera positionen efter behov
+  },
+});
 
-  export default Styles;
+export default Styles;
