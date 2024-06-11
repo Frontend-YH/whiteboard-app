@@ -16,7 +16,7 @@ Ensure you have the necessary dependencies installed:
 npm install
 ``` 
 ### 3. Running the App:
-You can run the app using either of these methods, but make sure to use the main2 branch:
+You can run the app using either of these methods:
 
 #### Expo Server: 
 Open the project directory in your terminal. 
