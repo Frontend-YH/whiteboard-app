@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-
 import {
   View,
   Text,
@@ -14,7 +13,7 @@ import {
   Alert,
  
 } from "react-native";
-//import { FontAwesome } from "@expo/vector-icons";
+
 import Styling from "./styles";
 import * as SQLite from "expo-sqlite";
 import { useTheme } from "../../ThemeContext";
@@ -28,21 +27,10 @@ const themes = {
   "Vacation theme": require("./../../assets/images/vacation-background.jpg"),
   "Office theme": require("./../../assets/images/office-background.jpg"),
 };
-
-// Any name works - free choice - picked whiteboard.db
 const db = SQLite.openDatabase("whiteboard.db");
-
-
 
 // ######## Connect to nodeJS server to sync data between devices ##########################
 const postData = async (title, content, wid, bkey, currentTime) => {
-  // Check for internet connectivity
-  // const isConnected = await NetInfo.isConnected.fetch();
-  
-  // if (!isConnected) {
-  //   console.log('No internet connection.');
-  //   return;
-  // }
 
   try {
     const response = await fetch('http://tserv.se:3001/whiteboard/api/posts', {
@@ -53,27 +41,17 @@ const postData = async (title, content, wid, bkey, currentTime) => {
       body: JSON.stringify({ title: title, content: content, wid: wid, bkey: bkey, currentTime: currentTime  }),
     });
     const data = await response.json();
-    //console.log(data);
+ 
     return data;
   } catch (error) {
     console.error('ErrorX posting data:', error);
   }
 
 
-  // let data = {"content": "datax"}
-  // return data;
-
 };
 
 // ######## Connect to nodeJS server to sync data between devices ##########################
 const syncData = async (bkey) => {
-  // Check for internet connectivity
-  // const isConnected = await NetInfo.isConnected.fetch();
-  
-  // if (!isConnected) {
-  //   console.log('No internet connection.');
-  //   return;
-  // }
 
   try {
     const response = await fetch('http://tserv.se:3001/whiteboard/api/sync', {
@@ -84,7 +62,7 @@ const syncData = async (bkey) => {
       body: JSON.stringify({ bkey: bkey  }),
     });
     const data = await response.json();
-    //console.log(data);
+   
     return data;
   } catch (error) {
     console.error('Error posting data:', error);
@@ -273,8 +251,6 @@ export default function Whiteboard() {
     if (returned) {
       newContent = returned.content;
     } 
-    console.log("Returned content: ", returned.content);
-    console.log("Returned newContent: ", newContent);
 
       return new Promise((resolve, reject) => {
         
@@ -590,8 +566,6 @@ export default function Whiteboard() {
       boardData[0].wid = serverData[0].wid;
     }   
     
-    // console.log("Empty:", boardData);
-    // console.log("BKeytest1: ", boardData[0].bkey);
 
     setOpenWhiteboardWid(boardData[0].wid);
     setOpenWhiteboardPostWid(boardData[0].pid);
@@ -599,9 +573,9 @@ export default function Whiteboard() {
     setOpenWhiteboardName(boardData[0].title);
     setOpenWhiteboardDesc("");
     setOpenWhiteboardContent(boardData[0].content);
-    //console.log("CTIME Open: ", getCurrentTime());
+   
     setopenWhiteboardEditTime(getCurrentTime());
-   //console.log("HK:", boardData[0].content);
+ 
     setShowInput(true);
     setShowBoards(false);
 
@@ -611,14 +585,13 @@ export default function Whiteboard() {
   const getWhiteboardContent = async (wid, bkey) => {
   
     const fetchedData = await fetchBoardPosts();
-    // console.log("minX:", fetchedData);
-    // console.log("minWID:", fetchedData[0].wid);
+  
     let boardData = fetchedData.filter(
       (post) => parseInt(post.wid) === parseInt(wid)
     );
 
     let serverData = await syncData(bkey);
-    //console.log("ServerDataX: ", serverData);
+    
     if(serverData) {
       boardData[0].content = serverData[0].content;
     }
