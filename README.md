@@ -26,6 +26,24 @@ Use the Expo Go app on your phone to scan the QR code displayed.
 #### Expo Client:
 Open the project directory in your terminal. Run ```expo run-ios``` or ```expo run-android``` (depending on your preferred device).
 
+#### NoseJS Backend
+
+1. Go to /backend directory and run:
+```Bash 
+npm install
+``` 
+
+2. Create MongoDB Atlas database. Create API key. Go to line 79 and 144 of app.js and change to your newly created MongoDB Atlas URI/settings.
+
+3. Connect to MongoDB Atlas with for example MongoDB Compass and create a whiteboard database. Create an empty collection named wbposts inside.
+
+4. Start the backend in the /backend directory:
+
+```Bash 
+node app.js
+``` 
+5. Go to the frontend and test the application. 
+
 
 
 ## Using the App

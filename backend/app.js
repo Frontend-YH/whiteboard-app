@@ -76,6 +76,7 @@ app.post('/whiteboard/api/posts', async (req, res) => {
   console.log("CurrentTime: ", currentTime);
   console.log("SaveTime: ", saveTime);
 
+// Change to your MongoDB Atlas cluster here
   const uri =
   "mongodb+srv://Cluster03639:" +
   process.env.DB_URL +
@@ -139,6 +140,7 @@ app.post('/whiteboard/api/sync', async (req, res) => {
 
   const bkey = req.body.bkey;
 
+  // Change to your MongoDB Atlas cluster here
   const uri =
   "mongodb+srv://Cluster03639:" +
   process.env.DB_URL +

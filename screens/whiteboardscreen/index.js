@@ -54,6 +54,7 @@ const postData = async (title, content, wid, bkey, currentTime) => {
 const syncData = async (bkey) => {
 
   try {
+    // Tserv.se should here be switched to your own server or localhost one.
     const response = await fetch('http://tserv.se:3001/whiteboard/api/sync', {
       method: 'POST',
       headers: {
