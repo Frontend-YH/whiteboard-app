@@ -33,6 +33,7 @@ const themes = {
 const db = SQLite.openDatabase("whiteboard.db");
 
 
+
 // ######## Connect to nodeJS server to sync data between devices ##########################
 const postData = async (title, content, wid, bkey, currentTime) => {
   // Check for internet connectivity
